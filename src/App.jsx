@@ -1,13 +1,14 @@
 import React from 'react';
 import './App.css';
 import { useState } from 'react';
-
+import loadingImage from './assets/loading.gif'
 function App() {
   let [cityname, setCityname] = useState('')
   let [wdetails, setWdetails] = useState('')
-
+let [imgg,setImgg]=useState(false)
   let getdata = (event) => {
-    event.preventDefault()
+ event.preventDefault()
+    setImgg(true)
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityname}&appid=549e949125517e3d686dbad51955570e&units=metric`)
       .then((res) => res.json())
       .then((finalres) => {
@@ -16,6 +17,7 @@ function App() {
         }
         else
           setWdetails(finalres)
+        setImgg(false)
       })
     setCityname('')
   }
@@ -33,15 +35,18 @@ function App() {
               onChange={(event) => setCityname(event.target.value)}
               placeholder="Enter city name"
               className="city-input"
-
+              required
             />
             <button className="search-button">Search</button>
           </div>
         </form>
-
+        {imgg?<img width={150} src={loadingImage} height={30} className='load' alt="noiamge "  />:''}
+                  
+            
         {
-
+          
           <>
+          
             {(wdetails != '') ?
               <div className="weather-info">
                 <div className="location">
@@ -49,7 +54,7 @@ function App() {
                 </div>
 
                 <div className="temperature">
-                  <h3>{wdetails.main.temp}</h3>
+                  <h3>{wdetails.main.temp}°C</h3>
                   <p>{wdetails.weather[0].main}
                   </p>
                 </div>
@@ -61,7 +66,9 @@ function App() {
               </div>
               : <>
                 <p className='text-gray-950'>no data</p>
+              
               </>
+              
             }
           </>
         }
